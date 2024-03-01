@@ -1,0 +1,32 @@
+---
+- hosts: 172.31.21.231
+  user: ansible
+  become: yes
+  connection: ssh
+  tasks:
+    - name: downloading apache-tomcat from dlcdn.apache.org
+      get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.86/bin/apache-tomcat-9.0.86.tar.gz"
+        dest: "."
+
+    - name: untar apache tomcat
+      command: tar -zxvf apache-tomcat-9.0.86.tar.gz
+
+
+    - name: changing users for /tomcat/bin
+      file:
+        path: "/home/ansible/apache-tomcat-9.0.86/bin"
+        owner: ansible
+        group: ansible
+        
+    - name: changing users for /tomcat/bin
+      file:
+        path: "/home/ansible/apache-tomcat-9.0.86/bin/startup.sh"
+        owner: ansible
+        group: ansible
+
+    - name: start the tomcat
+      shell: nohup ./apache-tomcat-9.0.86/bin/startup.sh
+
+    - name: install java-openjdk11
+      command: amazon-linux-extras install java-openjdk11 -y
